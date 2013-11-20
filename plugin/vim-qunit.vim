@@ -29,7 +29,4 @@ func! s:Reload(app, ...)
 endfunc
 
 command! -bar ChromeReload call s:Reload("Google Chrome", 'tell application "Google Chrome" to reload active tab of window 1') 
-command! -bar ChromeReloadStart ChromeReloadStop | autocmd BufWritePost <buffer> ChromeReload
-command! -bar ChromeReloadStop autocmd! BufWritePost <buffer>
-
 nnoremap <leader>r :ChromeReload<CR>
