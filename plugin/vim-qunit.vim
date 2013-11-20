@@ -18,50 +18,14 @@ fun! RunQunit()
 endfun
 
 command! -nargs=* -range RunQunit :call RunQunit()
-nnoremap <leader>j :RunQunit<CR>
-
-" forcused application enabled 1:True 0:False
-if !exists('g:returnAppFlag')
-  let g:returnAppFlag = 0
-endif 
-
-" forcused application name after browser reload
-if !exists('g:returnApp')
-  let g:returnApp = ""
-endif 
-
-" default  browser reload command
-if !exists('g:defaultReloadCmd')
-  let g:defaultReloadCmd = " -e 'tell application \"System Events\"'"
-\                        . " -e '    if UI elements enabled then'"
-\                        . " -e '        key down command'"
-\                        . " -e '        keystroke \"r\"'"
-\                        . " -e '        key up command'"
-\                        . " -e '    end if'"
-\                        . " -e 'end tell'"
-endif
-
-" display command error
-if !exists('g:debugMode')
-  let g:debugMode = 0 " 0:debug mode off. 1:debug mode on. 
-endif 
+nnoremap <leader>e :RunQunit<CR>
 
 func! s:Reload(app, ...)
     let l:appcmd    = "osascript -e 'tell app \"" . a:app . "\" to activate'"
-    let l:returncmd = " -e 'tell app \"" . g:returnApp . "\" to activate'"
-    let l:devnull = g:debugMode ? " " : "> /dev/null 2>&1"
+    let l:reloadcmd = " -e '" . a:1 . "'"
+    let l:execcmd = l:appcmd . l:reloadcmd
 
-    if a:0
-        let l:reloadcmd = " -e '" . a:1 . "'"
-    else
-        let l:reloadcmd = g:defaultReloadCmd
-    endif
-
-    let l:execcmd = l:appcmd . l:reloadcmd . l:devnull
-
-    silent! exec "silent !" . l:execcmd
-
-    redraw!
+    silent! exec "silent !" . l:execcmd | redraw!
 endfunc
 
 command! -bar ChromeReload call s:Reload("Google Chrome", 'tell application "Google Chrome" to reload active tab of window 1') 
